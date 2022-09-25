@@ -20,21 +20,21 @@ from .modules import (
 def make_transformer(
     src_vocab: Vocab,
     tgt_vocab: Vocab,
-    N=6,
-    d_model=512,
-    feed_forward_dimension=2048,
-    nb_head=8,
-    dropout=0.1,
+    N: int = 6,
+    model_dimension: int = 512,
+    feed_forward_dimension: int = 2048,
+    nb_head: int = 8,
+    dropout: float = 0.1,
 ):
-    attention_layer = MultiHeadedAttention(nb_head, d_model)
+    attention_layer = MultiHeadedAttention(nb_head, model_dimension)
     feed_forward_layer = PositionwiseFeedForward(
-        d_model, feed_forward_dimension, dropout
+        model_dimension, feed_forward_dimension, dropout
     )
-    position = PositionalEncoding(d_model, dropout)
+    position = PositionalEncoding(model_dimension, dropout)
     model = EncoderDecoder(
         Encoder(
             EncoderLayer(
-                d_model,
+                model_dimension,
                 deepcopy(attention_layer),
                 deepcopy(feed_forward_layer),
                 dropout,
@@ -43,7 +43,7 @@ def make_transformer(
         ),
         Decoder(
             DecoderLayer(
-                d_model,
+                model_dimension,
                 deepcopy(attention_layer),
                 deepcopy(attention_layer),
                 deepcopy(feed_forward_layer),
@@ -51,13 +51,11 @@ def make_transformer(
             ),
             N,
         ),
-        nn.Sequential(Embeddings(d_model, src_vocab), deepcopy(position)),
-        nn.Sequential(Embeddings(d_model, tgt_vocab), deepcopy(position)),
-        Generator(d_model, tgt_vocab),
+        nn.Sequential(Embeddings(model_dimension, src_vocab), deepcopy(position)),
+        nn.Sequential(Embeddings(model_dimension, tgt_vocab), deepcopy(position)),
+        Generator(model_dimension, tgt_vocab),
     )
 
-    # This was important from their code.
-    # Initialize parameters with Glorot / fan_avg.
     for parameter in model.parameters():
         if parameter.dim() > 1:
             nn.init.xavier_uniform_(parameter)
