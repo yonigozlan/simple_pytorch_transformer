@@ -1,0 +1,33 @@
+[tool.poetry]
+name = "simple_transformer"
+version = "0.1.0"
+description = "Simple Pytorch transformer implementation"
+authors = ["yonigozlan <yoni.gozlan@student-cs.fr>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+torch = "^1.11.0"
+pandas = "^1.4.4"
+torchdata = "0.3.0"
+torchtext = "0.12"
+spacy = "^3.4.1"
+altair = "^4.2.0"
+flake8 = "^5.0.4"
+GPUtil = "^1.4.0"
+
+[tool.poetry.dev-dependencies]
+black = "22.6.0"
+pylint = "2.14.5"
+isort = "5.10.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
+target-version = ["py39"]
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
