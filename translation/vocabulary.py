@@ -108,8 +108,4 @@ def load_vocab(tokenizer_en: Language, tokenizer_de: Language):
     else:
         vocab_en, vocab_de = torch.load("data/vocab_en_de.pt")
 
-    print("Finished.\nVocabulary sizes:")
-    print(len(vocab_en))
-    print(len(vocab_de))
-
     return vocab_en, vocab_de

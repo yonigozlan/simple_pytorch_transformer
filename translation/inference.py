@@ -158,7 +158,6 @@ def translate_example_sentence(
     tokenized_padded_sentence = tokenize_sentence(
         sentence, vocab_src, tokenizer_src, torch.device("cpu")
     ).unsqueeze(0)
-    print(tokenized_padded_sentence)
     (predicted_text, _, _,) = infer_translation_from_tokenized_sentence(
         model, tokenized_padded_sentence, None, vocab_src, vocab_tgt
     )

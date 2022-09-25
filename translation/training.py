@@ -111,13 +111,13 @@ def train_worker(
     print(f"Train worker process using GPU: {gpu} for training", flush=True)
     torch.cuda.set_device(gpu)
 
-    pad_idx = vocab_tgt["<blank>"]
+    pad_index = vocab_tgt["<blank>"]
     d_model = 512
     model = make_transformer(len(vocab_src), len(vocab_tgt), N=6)
     model.cuda(gpu)
     module = model
 
-    criterion = LabelSmoothing(size=len(vocab_tgt), padding_idx=pad_idx, smoothing=0.1)
+    criterion = LabelSmoothing(size=len(vocab_tgt), pad_index=pad_index, smoothing=0.1)
     criterion.cuda(gpu)
 
     train_dataloader, valid_dataloader = create_dataloaders(
@@ -149,7 +149,7 @@ def train_worker(
         model.train()
         print(f"[GPU{gpu}] Epoch {epoch} Training ====", flush=True)
         _, train_state = run_epoch(
-            (Batch(b[0], b[1], pad_idx) for b in train_dataloader),
+            (Batch(b[0], b[1], pad_index) for b in train_dataloader),
             model,
             SimpleLossCompute(module.generator, criterion),
             optimizer,
@@ -169,7 +169,7 @@ def train_worker(
         print(f"[GPU{gpu}] Epoch {epoch} Validation ====", flush=True)
         model.eval()
         sloss = run_epoch(
-            (Batch(b[0], b[1], pad_idx) for b in valid_dataloader),
+            (Batch(b[0], b[1], pad_index) for b in valid_dataloader),
             model,
             SimpleLossCompute(module.generator, criterion),
             DummyOptimizer(),
